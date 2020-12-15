@@ -9,7 +9,7 @@ baseurl: '/jekyll-uno' # the subpath of your site, e.g. /blog
 # google_analytics: 'UA-XXXXXX-X'
 # disqus_shortname: 'your-disqus-name'
 
-remote_theme: matthiaslischk/jekyll-uno # https://github.com/joshgerdes/jekyll-uno/compare/master...matthiaslischka:master
+remote_theme: matthiaslischka/jekyll-uno # https://github.com/joshgerdes/jekyll-uno/compare/master...matthiaslischka:master
 
 author:
   name: 'bopoh13'
@@ -19,24 +19,12 @@ author:
   github_username: bopoh13
   #linkedin_username:  
 
-defaults:
-  -
-    scope:
-      path: ''
-      type: 'posts'
-    values:
-        layout: 'post'
-
 # Build settings
 destination: _site
 paginate: 10
 permalink: /:year/:title/
 markdown: kramdown
 highlighter: rouge
-
-sass:
-    sass_dir: _sass
-    style: compressed
 
 kramdown:
   # use Github Flavored Markdown
