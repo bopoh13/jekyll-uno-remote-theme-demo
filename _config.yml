@@ -36,3 +36,24 @@ plugins:
   - jekyll-paginate
   - jekyll-remote-theme
   - jekyll-include-cache
+
+# Defaults
+defaults:
+  # _posts
+  - scope:
+      path: '' # not same as pages below
+      type: posts
+    values:
+      layout: post
+      author_profile: false
+#      read_time: false
+#      comments: false
+#      share: true
+#      related: true
+  # _pages
+#  - scope:
+#      path: '_pages' # not same as posts above
+#      type: pages
+#    values:
+#      layout: post
+#      author_profile: true
