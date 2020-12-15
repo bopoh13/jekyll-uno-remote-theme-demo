@@ -19,13 +19,13 @@ author:
   github_username: bopoh13
   #linkedin_username:  
 
-defaults:
-  -
-    scope:
-      path: ''
-      type: 'posts'
-    values:
-        layout: 'post'
+#defaults:
+#  -
+#    scope:
+#      path: ''
+#      type: 'posts'
+#    values:
+#        layout: 'post'
 
 # Build settings
 destination: _site
