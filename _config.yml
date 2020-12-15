@@ -9,7 +9,7 @@ baseurl: '/jekyll-uno' # the subpath of your site, e.g. /blog
 # google_analytics: 'UA-XXXXXX-X'
 # disqus_shortname: 'your-disqus-name'
 
-remote_theme: matthiaslischka/jekyll-uno
+remote_theme: joshgerdes/jekyll-uno
 
 author:
   name: 'bopoh13'
