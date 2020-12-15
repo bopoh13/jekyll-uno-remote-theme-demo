@@ -1,5 +1,5 @@
 ---
-permalink: /10090/
+#permalink: /10090/
 title: "Характеристики аккумуляторов 18650"
 date: 2018-03-10 23:55:00 +0300
 categories: charger
