@@ -11,6 +11,14 @@ baseurl: '/jekyll-uno' # the subpath of your site, e.g. /blog
 
 remote_theme: joshgerdes/jekyll-uno
 
+defaults:
+  -
+    scope:
+      path: ''
+      type: 'posts'
+    values:
+        layout: 'post'
+
 author:
   name: 'bopoh13'
   #email: 
