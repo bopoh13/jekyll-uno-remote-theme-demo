@@ -30,13 +30,13 @@ defaults:
 # Build settings
 destination: _site
 paginate: 10
-permalink: /:layout/:year/:title/
+permalink: /:year/:title/
 markdown: kramdown
 highlighter: rouge
 
-sass:
-    sass_dir: _sass
-    style: compressed
+#sass:
+#    sass_dir: _sass
+#    style: compressed
 
 kramdown:
   # use Github Flavored Markdown
@@ -45,8 +45,8 @@ kramdown:
   hard_wrap: false
 
 plugins:
-  - jekyll-paginate
+#  - jekyll-paginate
   - jekyll-remote-theme
-  - jekyll-include-cache
+#  - jekyll-include-cache
   
 #exclude: ['README.md', 'Gemfile', 'Gemfile.lock', '.travis.yml', 'vendor']
