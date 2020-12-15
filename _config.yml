@@ -1,19 +1,22 @@
 # Site settings
-title: 'Demo for jekyll-remote-theme with theme jekyll-uno'
-description: 'Jekyll-Uno - a minimal, responsive theme for Jekyll - used via jekyll-remote-theme'
-url: ''
-baseurl: '/jekyll-uno-remote-theme-demo'
+title: 'GROK'
+description: > # this means to ignore newlines until "baseurl:"
+  Write an awesome description for your new site here. You can edit this
+  line in _config.yml. It will appear in your document head meta (for
+  Google search results) and in your feed.xml site description.
+url: "https://bopoh13.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: '/jekyll-uno' # the subpath of your site, e.g. /blog
 # google_analytics: 'UA-XXXXXX-X'
 # disqus_shortname: 'your-disqus-name'
 
 remote_theme: matthiaslischka/jekyll-uno
 
 author:
-  name: 'Matthias Lischka'
+  name: 'bopoh13'
   #email: 
   #twitter_username: 
   #facebook_username: 
-  github_username: matthiaslischka
+  github_username: bopoh13
   #linkedin_username:  
 
 defaults:
@@ -46,4 +49,4 @@ plugins:
   - jekyll-remote-theme
   - jekyll-include-cache
   
-exclude: ['README.md', 'Gemfile', 'Gemfile.lock', '.travis.yml', 'vendor']
+#exclude: ['README.md', 'Gemfile', 'Gemfile.lock', '.travis.yml', 'vendor']
