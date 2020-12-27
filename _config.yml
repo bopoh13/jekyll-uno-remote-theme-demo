@@ -10,7 +10,7 @@ baseurl: '/jekyll-uno' # the subpath of your site, e.g. /blog
 # disqus_shortname: 'your-disqus-name'
 
 #remote_theme: matthiaslischka/jekyll-uno # https://github.com/joshgerdes/jekyll-uno/compare/master...matthiaslischka:master
-remote_theme: tzuehlke/jekyll-uno-timeline
+remote_theme: yizeng/jekyll-theme-simple-texture
 
 author:
   name: 'bopoh13'
