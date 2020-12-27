@@ -35,8 +35,8 @@ kramdown:
 
 plugins:
   - jekyll-paginate
-  - jekyll-remote-theme
-  - jekyll-include-cache
+#  - jekyll-remote-theme
+#  - jekyll-include-cache
 
 # Defaults
 defaults:
