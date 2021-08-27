@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: 🛎️ Checkout repository ${{ github.repository }}
-      uses: actions/checkout@main
+      uses: actions/checkout@v2
     
     - name: 🔧 Commit SHA
       run: |
@@ -26,7 +26,8 @@ jobs:
     - name: Use Jekyll Action
       uses: helaili/jekyll-action@v2
       with:
-        jekyll_src: 'master'
+        token: ${{ github.sha }}"
+        target_branch: 'master'
     
     - name: 🚀 Build the site in the jekyll/builder container
       run: |
