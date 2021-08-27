@@ -25,8 +25,6 @@ jobs:
     # https://github.community/t/jekyll-4-0-github-pages-and-actions/129397/2
     - name: Use Jekyll Action
       uses: helaili/jekyll-action@v2
-      env:
-        JEKYLL_PAT: ${{ github.token }}
       with:
         jekyll_src: 'master'
     
