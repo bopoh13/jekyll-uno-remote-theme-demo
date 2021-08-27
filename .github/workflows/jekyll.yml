@@ -16,10 +16,11 @@ jobs:
       - name: 🛎️ Checkout repository ${{ github.repository }}
         uses: actions/checkout@v2
       
-      - name: 🔧 Commit SHA
+      - name: 🔧 Check variables
         run: |
-          echo "$GITHUB_REPOSITORY - $GITHUB_ACTION_PATH SHA $GITHUB_SHA ${{ github.sha }}"
-          echo "Workspace ${{ github.workspace }}"
+          echo "REPOSITORY	$GITHUB_REPOSITORY - ${{ github.repository }}"
+          echo "SHA	$GITHUB_SHA - ${{ github.sha }}"
+          echo "WORKSPACE	$GITHUB_WORKSPACE - ${{ github.workspace }}"
           ls -ls
       
       ## Use GitHub Actions' cache to cache dependencies on servers
