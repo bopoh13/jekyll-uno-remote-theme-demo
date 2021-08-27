@@ -18,7 +18,7 @@ jobs:
       - name: 🔧 Commit SHA
         run: |
           echo "OS {{ runner.os }} SHA ${{ github.sha }}"
-          echo "Workspace ${{ github.workspace }}"
+          echo "Workspace ${{ github.workspace }} ${{ secrets.GH_TOKEN }}"
           ls -ls
       
       # Use GitHub Actions' cache to cache dependencies on servers
