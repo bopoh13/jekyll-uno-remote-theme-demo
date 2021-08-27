@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_and_deploy:
-    name: Page Build
+    name: TEST Page Build
     runs-on: ubuntu-latest
 
     steps:
@@ -28,11 +28,12 @@ jobs:
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-
-    
+      
       # Use GitHub Deploy Action to build and deploy to Github
       - uses: jeffreytse/jekyll-deploy-action@master
         with:
           provider: 'github'
+      ## ssh-rsa
           token: ${{ secrets.GH_TOKEN }} # It's your Personal Access Token (PAT) - Not { github.token }
       #     repository: ''             # Default is current repository
           branch: 'gh-pages'         # Default is gh-pages for github provider
