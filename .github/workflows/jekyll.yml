@@ -17,25 +17,19 @@ jobs:
     
     - name: 🔧 Commit SHA
       run: |
-        echo "SHA ${{ github.sha }}"
+        echo "OS {{ runner.os }} SHA ${{ github.sha }}"
+        echo "Workspace ${{ github.workspace }}"
         aws --version
         ls -ls
-    
-    # Use GitHub Actions' cache to shorten build times and decrease load on servers
-    - uses: actions/cache@v2
-      with:
-        path: bopoh13/jekyll-uno
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
     
     # Specify the target branch (optional)
     # https://github.community/t/jekyll-4-0-github-pages-and-actions/129397/2
     - name: Run Jekyll Action
       uses: helaili/jekyll-action@v2
       with:
-        target_branch: 'master'
+        target_branch: master
         token: ${{ github.token }}
+        build_only: true
         ACTIONS_STEP_DEBUG: true
     
     - name: 🚀 Build the site in the jekyll/builder container
