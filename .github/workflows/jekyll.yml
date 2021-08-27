@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_and_deploy:
-    name: Page Build
+    name: Test Page Build
     runs-on: ubuntu-latest
 
     steps:
@@ -36,10 +36,10 @@ jobs:
           provider: 'github'
           token: ${{ github.token }} # It's your Personal Access Token(PAT)
       #     repository: ''             # Default is current repository
-      #     branch: 'gh-pages'         # Default is gh-pages for github provider
+          branch: 'gh-pages'         # Default is gh-pages for github provider
       #     jekyll_src: './'           # Default is root directory
       #     jekyll_cfg: '_config.yml'  # Default is _config.yml
-      #     jekyll_baseurl: ''         # Default is according to _config.yml
+          jekyll_baseurl: '/jekyll-uno'         # Default is empty
       #     bundler_ver: '>=0'         # Default is latest bundler version
       #     cname: ''                  # Default is to not use a cname
       #     actor: ''                  # Default is the GITHUB_ACTOR
