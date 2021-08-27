@@ -29,8 +29,6 @@ jobs:
       with:
         target_branch: master
         token: ${{ github.token }}
-        build_only: true
-        ACTIONS_STEP_DEBUG: true
     
     - name: 🚀 Build the site in the jekyll/builder container
       run: |
