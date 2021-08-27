@@ -8,12 +8,14 @@ on:
 
 jobs:
   build:
-
+    name: Test Page Build
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the site in the jekyll/builder container
+    - name: 🛎️ Checkout repository
+      uses: actions/checkout@main
+    
+    - name: 🚀 Build the site in the jekyll/builder container
       run: |
         docker run \
         -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
