@@ -10,6 +10,7 @@ jobs:
   build_and_deploy:
     name: TEST Page Build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: 🛎️ Checkout repository ${{ github.repository }}
@@ -17,35 +18,35 @@ jobs:
       
       - name: 🔧 Commit SHA
         run: |
-          echo "SHA ${{ github.sha }}"
+          echo "${ GITHUB_REPOSITORY } - ${ GITHUB_ACTION_PATH } SHA ${ GITHUB_SHA } ${{ github.sha }}"
           echo "Workspace ${{ github.workspace }}"
           ls -ls
       
-      # Use GitHub Actions' cache to cache dependencies on servers
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
+      ## Use GitHub Actions' cache to cache dependencies on servers
+      #- uses: actions/cache@v2
+      #  with:
+      #    path: vendor/bundle
+      #    key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+      #    restore-keys: |
+      #      ${{ runner.os }}-gems-
       
-      # Use GitHub Deploy Action to build and deploy to Github
-      - uses: jeffreytse/jekyll-deploy-action@master
-        with:
-          provider: github
-          token: ${{ secrets.GH_TOKEN }} # It's your Personal Access Token (PAT) - Not { github.token }
-      #     repository: ''             # Default is current repository
-          branch: 'gh-pages'         # Default is gh-pages for github provider
-      #     jekyll_src: './'           # Default is root directory
-      #     jekyll_cfg: '_config.yml'  # Default is _config.yml
-      #    jekyll_baseurl: '/jekyll-uno'         # Default is empty
-      #     bundler_ver: '>=0'         # Default is latest bundler version
-      #     cname: ''                  # Default is to not use a cname
-      #     actor: ''                  # Default is the GITHUB_ACTOR
-      #     pre_build_commands: 'apk --update add imagemagick nodejs'     # Installing additional dependencies (Arch Linux)
+      ## Use GitHub Deploy Action to build and deploy to Github
+      #- uses: jeffreytse/jekyll-deploy-action@master
+      #  with:
+      #    provider: github
+      #    token: ${{ secrets.GH_TOKEN }} # It's your Personal Access Token (PAT) - Not ${ GITHUB_TOKEN }
+      ##     repository: ''             # Default is current repository
+      #    branch: 'gh-pages'         # Default is gh-pages for github provider
+      ##     jekyll_src: './'           # Default is root directory
+      ##     jekyll_cfg: '_config.yml'  # Default is _config.yml
+      ##    jekyll_baseurl: '/jekyll-uno'         # Default is empty
+      ##     bundler_ver: '>=0'         # Default is latest bundler version
+      ##     cname: ''                  # Default is to not use a cname
+      ##     actor: ''                  # Default is the GITHUB_ACTOR
+      ##     pre_build_commands: 'apk --update add imagemagick nodejs'     # Installing additional dependencies (Arch Linux)
       
-      # - name: 🚀 Build the site in the jekyll/builder container
-      #   run: |
-      #     docker run \
-      #     -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-      #     jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+      - name: 🚀 Build the site in the jekyll/builder container
+        run: |
+          docker run \
+          -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
+          jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
