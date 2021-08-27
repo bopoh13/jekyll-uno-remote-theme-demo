@@ -15,13 +15,21 @@ jobs:
     - name: 🛎️ Checkout repository
       uses: actions/checkout@main
     
-    - name: 🔧 Install and Build # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+    - name: 🔧 Commit SHA
       run: |
-        npm install
-        npm run build
+        echo "SHA ${{ github.sha }}"
+        ls -ls
     
-    - name: 🚀 Deploy
-      uses: JamesIves/github-pages-deploy-action@4.1.5
+    # Specify the target branch (optional)
+    # https://github.community/t/jekyll-4-0-github-pages-and-actions/129397/2
+    - uses: helaili/jekyll-action@v2
+      env:
+        JEKYLL_PAT: ${{ secrets.JEKYLL_PAT }}
       with:
-        branch: master # The branch the action should deploy to.
-        folder: _site # The folder the action should deploy.
+        jekyll_src: 'master'
+    
+    - name: 🚀 Build the site in the jekyll/builder container
+      run: |
+        docker run \
+        -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
+        jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
