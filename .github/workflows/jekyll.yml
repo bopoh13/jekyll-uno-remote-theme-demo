@@ -33,7 +33,6 @@ jobs:
       - uses: jeffreytse/jekyll-deploy-action@master
         with:
           provider: 'github'
-      ## ssh-rsa
           token: ${{ secrets.GH_TOKEN }} # It's your Personal Access Token (PAT) - Not { github.token }
       #     repository: ''             # Default is current repository
           branch: 'gh-pages'         # Default is gh-pages for github provider
