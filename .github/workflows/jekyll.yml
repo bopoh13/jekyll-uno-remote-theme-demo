@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_and_deploy:
-    name: Test Page Build
+    name: Page Build
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
         run: |
           echo "OS {{ runner.os }} SHA ${{ github.sha }}"
           echo "Workspace ${{ github.workspace }}"
-          aws --version
+      #    aws --version
           ls -ls
       
       # Use GitHub Actions' cache to cache dependencies on servers
@@ -34,7 +34,7 @@ jobs:
       - uses: jeffreytse/jekyll-deploy-action@master
         with:
           provider: 'github'
-          token: ${{ github.token }} # It's your Personal Access Token(PAT)
+          token: ${{ secrets.GH_TOKEN }} # It's your Personal Access Token (PAT) - Not { github.token }
       #     repository: ''             # Default is current repository
           branch: 'gh-pages'         # Default is gh-pages for github provider
       #     jekyll_src: './'           # Default is root directory
