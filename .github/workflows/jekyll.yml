@@ -17,8 +17,8 @@ jobs:
       
       - name: 🔧 Commit SHA
         run: |
-          echo "OS {{ runner.os }} SHA ${{ github.sha }}"
-          echo "Workspace ${{ github.workspace }} ${{ secrets.GH_TOKEN }}"
+          echo "SHA ${{ github.sha }}"
+          echo "Workspace ${{ github.workspace }}"
           ls -ls
       
       # Use GitHub Actions' cache to cache dependencies on servers
@@ -38,7 +38,7 @@ jobs:
           branch: 'gh-pages'         # Default is gh-pages for github provider
       #     jekyll_src: './'           # Default is root directory
       #     jekyll_cfg: '_config.yml'  # Default is _config.yml
-          jekyll_baseurl: '/jekyll-uno'         # Default is empty
+      #    jekyll_baseurl: '/jekyll-uno'         # Default is empty
       #     bundler_ver: '>=0'         # Default is latest bundler version
       #     cname: ''                  # Default is to not use a cname
       #     actor: ''                  # Default is the GITHUB_ACTOR
