@@ -12,19 +12,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 🛎️ Checkout repository
+    - name: 🛎️ Checkout repository ${{ github.repository }}
       uses: actions/checkout@main
     
     - name: 🔧 Commit SHA
       run: |
         echo "SHA ${{ github.sha }}"
+        aws --version
         ls -ls
     
     # Specify the target branch (optional)
     # https://github.community/t/jekyll-4-0-github-pages-and-actions/129397/2
-    - uses: helaili/jekyll-action@v2
+    - name: Use Jekyll Action
+      uses: helaili/jekyll-action@v2
       env:
-        JEKYLL_PAT: ${{ secrets.JEKYLL_PAT }}
+        JEKYLL_PAT: ${{ github.token }}
       with:
         jekyll_src: 'master'
     
