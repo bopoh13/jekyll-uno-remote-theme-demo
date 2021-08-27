@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_and_deploy:
-    name: Test Page Build
+    name: Page Build
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,6 @@ jobs:
         run: |
           echo "OS {{ runner.os }} SHA ${{ github.sha }}"
           echo "Workspace ${{ github.workspace }}"
-      #    aws --version
           ls -ls
       
       # Use GitHub Actions' cache to cache dependencies on servers
