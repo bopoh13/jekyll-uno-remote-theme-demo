@@ -22,7 +22,7 @@ jobs:
           aws --version
           ls -ls
       
-      Use GitHub Actions' cache to cache dependencies on servers
+      # Use GitHub Actions' cache to cache dependencies on servers
       - uses: actions/cache@v2
         with:
           path: vendor/bundle
