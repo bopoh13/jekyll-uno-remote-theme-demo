@@ -47,7 +47,7 @@ jobs:
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: ./${{ env.SOURCE_DIR }} # The folder the action should deploy.
-#          target-folder: ./_site # publish_dir
+          target-folder: ./_site # publish_dir
           silent: false
           ACTIONS_STEP_DEBUG: true
 #      
