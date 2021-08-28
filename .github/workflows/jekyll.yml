@@ -7,9 +7,10 @@ on:
 
 env:
   RUBY_VERSION: 2.7
+  SOURCE_FOLDER: docs/
 
 jobs:
-  deploy_docs:
+  deploy_source:
     if: "!contains(github.event.commits[0].message, '[ci skip]')"
     runs-on: 'ubuntu-latest'
     env:
@@ -23,20 +24,21 @@ jobs:
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
-      #    working-directory: ./docs
+      #    working-directory: ./${{ env.SOURCE_FOLDER }}
       
       - name: Clone target branch
         run: |
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
           REMOTE_REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           echo "Publishing to ${GITHUB_REPOSITORY} on branch ${REMOTE_BRANCH}"
-          rm -rf docs/_site/
+          rm -rf ./${{ env.SOURCE_FOLDER }}_site/
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch --no-checkout \
-            "${REMOTE_REPO}" docs/_site/
+            "${REMOTE_REPO}" ./${{ env.SOURCE_FOLDER }}_site/
       
       - name: Build site --without 'rubocop' and 'reek'
         run: |
-          bundle exec jekyll build --source docs --destination docs/_site --verbose --trace
+          bundle exec jekyll build --source ./${{ env.SOURCE_FOLDER }} \
+            --destination ./${{ env.SOURCE_FOLDER }}_site --verbose --trace
         env:
           # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -44,12 +46,12 @@ jobs:
       - name: Deploy to GitHub Pages
         run: |
           SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
-          pushd docs/_site &>/dev/null
+          pushd ./${{ env.SOURCE_FOLDER }}_site &>/dev/null
           : > .nojekyll
           git add --all
           git -c user.name="${GITHUB_ACTOR}" -c user.email="${GITHUB_ACTOR}@users.noreply.github.com" \
             commit --quiet \
-            --message "Deploy docs from ${GITHUB_SHA}" \
+            --message "Deploy ${{ env.SOURCE_FOLDER }} from ${GITHUB_SHA}" \
             --message "$SOURCE_COMMIT"
           git push
           popd &>/dev/null
