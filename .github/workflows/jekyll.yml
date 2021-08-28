@@ -36,20 +36,26 @@ jobs:
             <body>
               <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through 
                 <a href="https://github.com/marketplace/actions/deploy-to-github-pages">Deploy to GitHub Pages</a>.</p>
-              <ul><li>https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions</li>
-                <li>https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#publishing-sources-for-github-pages-sites</li></ul>
+              <ul><li><a href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions">Workflow syntax for Github Actions</a>.</li>
+                <li><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#publishing-sources-for-github-pages-sites">Publishing sources for Github Pages sites</a></li></ul>
             </body>
           </html>
           EOL
       
-      - name: Build and Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v4
+      - name: Deploy to GitHub Pages
+        if: success()
+#        uses: JamesIves/github-pages-deploy-action@releases/v4
+        uses: crazy-max/ghaction-github-pages@v2
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: ./${{ env.SOURCE_DIR }} # The folder the action should deploy.
-          target-folder: ./_site # publish_dir
-          silent: false
+          target_branch: gh-pages
+          build_dir: public
+#          branch: gh-pages # The branch the action should deploy to.
+#          folder: ./${{ env.SOURCE_DIR }} # The folder the action should deploy.
+#          target-folder: ./_site # publish_dir
+#          silent: false
           ACTIONS_STEP_DEBUG: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      
 #      - name: Sleep for 60 seconds
 #        uses: jakejarvis/wait-action@master
