@@ -46,8 +46,8 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           branch: gh-pages # The branch the action should deploy to.
-          folder: _site # The folder the action should deploy.
-          target-folder: ./${{ env.SOURCE_DIR }} # publish_dir
+          folder: ./${{ env.SOURCE_DIR }} # The folder the action should deploy.
+#          target-folder: ./_site # publish_dir
           silent: false
           ACTIONS_STEP_DEBUG: true
 #      
