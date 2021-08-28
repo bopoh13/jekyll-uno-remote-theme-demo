@@ -21,12 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
-      #    working-directory: ./${{ env.SOURCE_FOLDER }}
-      
       - name: Clone target branch
         run: |
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
@@ -44,6 +38,12 @@ jobs:
       BUNDLE_JOBS: 4
       BUNDLE_RETRY: 3
     steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+      #    working-directory: ./${{ env.SOURCE_FOLDER }}
+      
       - name: Build site (without 'rubocop' and 'reek')
         run: |
           bundle exec jekyll build --source ./${{ env.SOURCE_FOLDER }} \ --destination ./${{ env.SOURCE_FOLDER }}_site \
