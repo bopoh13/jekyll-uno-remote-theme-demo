@@ -48,7 +48,7 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v2
         with:
           target_branch: gh-pages
-          build_dir: public
+          build_dir: ./${{ env.SOURCE_DIR }}
 #          branch: gh-pages # The branch the action should deploy to.
 #          folder: ./${{ env.SOURCE_DIR }} # The folder the action should deploy.
 #          target-folder: ./_site # publish_dir
