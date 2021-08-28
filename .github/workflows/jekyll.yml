@@ -48,7 +48,8 @@ jobs:
 #          folder: _site # The folder the action should deploy.
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./${{ env.SOURCE_DIR }}
-          exclude_assets: '.github,README.md'
+          exclude_assets: .github,.gitignore,.gitattribute,Gemfile,README.md
+          enable_jekyll: true
           user_name: ${{ env.DEPLOY_USER }}
           user_email: ${{ env.DEPLOY_USER }}@users.noreply.github.com
 #          target-folder: ./${{ env.SOURCE_DIR }}
