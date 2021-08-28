@@ -18,10 +18,12 @@ jobs:
       BUNDLE_RETRY: 3
     steps:
       - uses: actions/checkout@v2
+      
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
+      
       - name: Clone target branch
         run: |
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
@@ -30,11 +32,16 @@ jobs:
           rm -rf docs/_site/
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch --no-checkout \
             "${REMOTE_REPO}" docs/_site/
+      
       - name: Build site
-        run: bundle exec jekyll build --source docs --destination docs/_site --verbose --trace
+        run: |
+          rubocop -v
+          reek -v
+          bundle exec jekyll build --source docs --destination docs/_site --verbose --trace
         env:
           # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Deploy to GitHub Pages
         run: |
           SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
