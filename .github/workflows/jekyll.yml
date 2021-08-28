@@ -26,6 +26,7 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
         # working-directory: ./${{ env.SITE_FILES_DIR }}
+          ACTIONS_STEP_DEBUG: true
       
       - name: Clone target branch
         run: |
@@ -52,15 +53,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Deploy to GitHub Pages
         run: |
-          SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
+        #  SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
           pushd ./${{ env.SITE_FILES_DIR }}_site &>/dev/null
           : > .nojekyll
           git add --all
           git -c user.name="${GITHUB_ACTOR}" -c user.email="${GITHUB_ACTOR}@users.noreply.github.com" \
             commit --quiet \
-            --message "Deploy ${{ env.SITE_FILES_DIR }} from ${GITHUB_SHA}" \
-            --message "$SOURCE_COMMIT"
+            --message "Deploy ${{ env.SITE_FILES_DIR }} from ${GITHUB_SHA}"
           git push
           popd &>/dev/null
-        with:
-          ACTIONS_STEP_DEBUG: true
