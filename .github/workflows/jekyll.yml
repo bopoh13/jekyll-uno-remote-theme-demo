@@ -36,7 +36,7 @@ jobs:
       
       - name: Build site (without 'rubocop' and 'reek')
         run: |
-          bundle exec jekyll build --source docs --destination docs/_site --verbose --trace
+          bundle exec jekyll build --source ./docs --destination docs/_site --verbose --trace
         env:
           # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
