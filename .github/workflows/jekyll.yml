@@ -53,7 +53,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Deploy to GitHub Pages
         run: |
-        #  SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
           pushd ./${{ env.SITE_FILES_DIR }}_site &>/dev/null
           : > .nojekyll
           git add --all
