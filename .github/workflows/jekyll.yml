@@ -23,6 +23,7 @@ jobs:
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
+          working-directory: ./docs
       
       - name: Clone target branch
         run: |
