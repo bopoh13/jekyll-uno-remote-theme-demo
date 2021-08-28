@@ -44,7 +44,7 @@ jobs:
       - name: Build and Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
-          branch: master
+          branch: gh-pages
           folder: _site
           target-folder: ./${{ env.SOURCE_DIR }}
           silent: true
