@@ -55,22 +55,22 @@ jobs:
         env:
         # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-  build_container:
-  #  name: 🚀 Build Site in the jekyll/builder container
-    needs: build_and_deploy
-    runs-on: ubuntu-latest
-    env:
-      BUNDLE_PATH: "vendor/bundle"
-      BUNDLE_JOBS: 4
-      BUNDLE_RETRY: 3
-    
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-          ACTIONS_STEP_DEBUG: true
-      
+#      
+#  build_container:
+#  #  name: 🚀 Build Site in the jekyll/builder container
+#    needs: build_and_deploy
+#    runs-on: ubuntu-latest
+#    env:
+#      BUNDLE_PATH: "vendor/bundle"
+#      BUNDLE_JOBS: 4
+#      BUNDLE_RETRY: 3
+#    
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          persist-credentials: false
+#          ACTIONS_STEP_DEBUG: true
+     
       - name: Dump GitHub context
         run: echo "${GITHUB_CONTEXT}"
         env:
