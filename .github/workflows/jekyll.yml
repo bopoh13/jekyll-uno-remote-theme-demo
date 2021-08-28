@@ -44,7 +44,7 @@ jobs:
         # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
-  deploy_source:
+  build_source:
     name: 🚀 Site Build
     runs-on: ubuntu-latest
     needs: deploy_source
