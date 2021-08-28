@@ -44,7 +44,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           branch: gh-pages
-          folder: integration
+          folder: _site
           target-folder: ./${{ env.SOURCE_DIR }}
           silent: true
   
