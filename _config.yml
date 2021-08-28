@@ -46,6 +46,7 @@ plugins:
 exclude:
   - Gemfile
   - Gemfile.lock
+  - vendor
   - README.md
 
 # Defaults
