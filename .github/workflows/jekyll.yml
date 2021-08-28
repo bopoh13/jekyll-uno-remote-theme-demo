@@ -7,25 +7,28 @@ on:
 
 env:
   RUBY_VERSION: 2.7
-  SITE_FILES_DIR: ""
+  SOURCE_DIR: ""
 
 jobs:
-  deploy_source:
+  build_and_deploy:
     if: "!contains(github.event.commits[0].message, '[ci skip]')"
-    name: 🔧 Prepare Deploy
+  #  name: 🔧 Build and Deploy
     runs-on: ubuntu-latest
     env:
       BUNDLE_PATH: "vendor/bundle"
       BUNDLE_JOBS: 4
       BUNDLE_RETRY: 3
+    
     steps:
       - uses: actions/checkout@v2
+        with:
+          ACTIONS_STEP_DEBUG: true
       
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
-        # working-directory: ./${{ env.SITE_FILES_DIR }}
+          bundler-cache: false
+        # working-directory: ./${{ env.SOURCE_DIR }}
           ACTIONS_STEP_DEBUG: true
       
       - name: Clone target branch
@@ -33,31 +36,49 @@ jobs:
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
           REMOTE_REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           echo "Publishing to ${GITHUB_REPOSITORY} on branch ${REMOTE_BRANCH}"
-          rm -rf ./${{ env.SITE_FILES_DIR }}_site/
+          rm -rf ./${{ env.SOURCE_DIR }}_site/
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch \
-            --no-checkout "${REMOTE_REPO}" ./${{ env.SITE_FILES_DIR }}_site/
+            --no-checkout "${REMOTE_REPO}" ./${{ env.SOURCE_DIR }}_site/
       
       - name: Build site (without 'rubocop' and 'reek')
         run: |
-          bundle exec jekyll build --source ./${{ env.SITE_FILES_DIR }} \ --destination ./${{ env.SITE_FILES_DIR }}_site \
+          bundle exec jekyll build --source ./${{ env.SOURCE_DIR }} \ --destination ./${{ env.SOURCE_DIR }}_site \
             --verbose --trace
         env:
         # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-  build_source:
-    name: 🚀 Site Build
+      
+  build_container:
+  #  name: 🚀 Build Site in the jekyll/builder container
+    needs: build_and_deploy
     runs-on: ubuntu-latest
-    needs: deploy_source
+    env:
+      BUNDLE_PATH: "vendor/bundle"
+      BUNDLE_JOBS: 4
+      BUNDLE_RETRY: 3
+    
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          ACTIONS_STEP_DEBUG: true
+      
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+        # working-directory: ./${{ env.SOURCE_DIR }}
+          ACTIONS_STEP_DEBUG: true
+      
       - name: Deploy to GitHub Pages
         run: |
-          pushd ./${{ env.SITE_FILES_DIR }}_site &>/dev/null
+          SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
+          pushd ./${{ env.SOURCE_DIR }}_site &>/dev/null
           : > .nojekyll
           git add --all
           git -c user.name="${GITHUB_ACTOR}" -c user.email="${GITHUB_ACTOR}@users.noreply.github.com" \
             commit --quiet \
-            --message "Deploy ${{ env.SITE_FILES_DIR }} from ${GITHUB_SHA}"
+            --message "Deploy ${{ env.SOURCE_DIR }} from ${GITHUB_SHA}" \
+            --message "$SOURCE_COMMIT"
           git push
           popd &>/dev/null
