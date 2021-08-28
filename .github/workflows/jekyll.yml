@@ -33,9 +33,8 @@ jobs:
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch --no-checkout \
             "${REMOTE_REPO}" docs/_site/
       
-      - name: Build site
+      - name: Build site (without 'rubocop')
         run: |
-          rubocop -v
           reek -v
           bundle exec jekyll build --source docs --destination docs/_site --verbose --trace
         env:
