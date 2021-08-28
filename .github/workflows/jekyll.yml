@@ -21,6 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+      #    working-directory: ./${{ env.SOURCE_FOLDER }}
+      
       - name: Clone target branch
         run: |
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
@@ -30,12 +36,6 @@ jobs:
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch \
             --no-checkout "${REMOTE_REPO}" ./${{ env.SOURCE_FOLDER }}_site/
       
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
-      #    working-directory: ./${{ env.SOURCE_FOLDER }}
-      
       - name: Build site (without 'rubocop' and 'reek')
         run: |
           bundle exec jekyll build --source ./${{ env.SOURCE_FOLDER }} \ --destination ./${{ env.SOURCE_FOLDER }}_site \
@@ -43,7 +43,16 @@ jobs:
         env:
           # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+  
+  deploy_source:
+    name: 🚀 Site Build
+    runs-on: ubuntu-latest
+    needs: prepare_deploy_source
+    env:
+      BUNDLE_PATH: "vendor/bundle"
+      BUNDLE_JOBS: 4
+      BUNDLE_RETRY: 3
+    steps:      
       - name: Deploy to GitHub Pages
         run: |
           SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
