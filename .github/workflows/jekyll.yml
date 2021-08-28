@@ -48,11 +48,8 @@ jobs:
     name: 🚀 Site Build
     runs-on: ubuntu-latest
     needs: prepare_deploy_source
-    env:
-      BUNDLE_PATH: "vendor/bundle"
-      BUNDLE_JOBS: 4
-      BUNDLE_RETRY: 3
-    steps:      
+    steps:
+      - uses: actions/checkout@v2
       - name: Deploy to GitHub Pages
         run: |
           SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
