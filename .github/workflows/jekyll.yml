@@ -10,14 +10,13 @@ env:
   DEPLOY_USER: "github-actions[bot]" # or "${GITHUB_ACTOR}"
   SOURCE_DIR: "" # exclude 'vendor' dir in config.yml
 
-# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-concurrency:
-  group: ci-${{ github.ref }}
-
 jobs:
   install:
     name: 🔧 Install Jekyll
     runs-on: ubuntu-latest
+    # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+    concurrency:
+      group: ci-${{ github.ref }}
     
     steps:
       - uses: actions/checkout@v2.3.4
@@ -42,18 +41,25 @@ jobs:
           EOL
       
       - name: Build and Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v4
+#        uses: JamesIves/github-pages-deploy-action@releases/v4
+         uses: peaceiris/actions-gh-pages@v3
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: _site # The folder the action should deploy.
-          target-folder: ./${{ env.SOURCE_DIR }}
-          silent: false
+#          branch: gh-pages # The branch the action should deploy to.
+#          folder: _site # The folder the action should deploy.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./${{ env.SOURCE_DIR }}
+          exclude_assets: '.github,README.md'
+          user_name: ${{ env.DEPLOY_USER }}
+          user_email: ${{ env.DEPLOY_USER }}@users.noreply.github.com
+#          target-folder: ./${{ env.SOURCE_DIR }}
+#          silent: false
           ACTIONS_STEP_DEBUG: true
 #      
 #      - name: Sleep for 60 seconds
 #        uses: jakejarvis/wait-action@master
 #        with:
 #          time: '60s'
+#          ACTIONS_STEP_DEBUG: true
 #      
 #      - name: Cleanup Generated Branch
 #        uses: dawidd6/action-delete-branch@v3
@@ -69,6 +75,9 @@ jobs:
       github.ref == 'refs/heads/master' && github.event.repository.fork == false
     name: 🚀 Build and Deploy
     runs-on: ubuntu-latest
+    # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+    concurrency:
+      group: ci-${{ github.ref }}
     needs: install
     env:
       BUNDLE_PATH: "vendor/bundle"
