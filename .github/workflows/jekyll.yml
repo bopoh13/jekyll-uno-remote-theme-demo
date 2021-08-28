@@ -7,12 +7,13 @@ on:
 
 env:
   RUBY_VERSION: 2.7
-  SOURCE_FOLDER: ''
+  SOURCE_FOLDER: ""
 
 jobs:
-  deploy_source:
+  prepare_deploy_source:
     if: "!contains(github.event.commits[0].message, '[ci skip]')"
-    runs-on: 'ubuntu-latest'
+    name: 🔧 Prepare Deploy
+    runs-on: ubuntu-latest
     env:
       BUNDLE_PATH: "vendor/bundle"
       BUNDLE_JOBS: 4
@@ -32,13 +33,21 @@ jobs:
           REMOTE_REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           echo "Publishing to ${GITHUB_REPOSITORY} on branch ${REMOTE_BRANCH}"
           rm -rf ./${{ env.SOURCE_FOLDER }}_site/
-          git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch --no-checkout \
-            "${REMOTE_REPO}" ./${{ env.SOURCE_FOLDER }}_site/
-      
-      - name: Build site --without 'rubocop' and 'reek'
+          git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch \
+            --no-checkout "${REMOTE_REPO}" ./${{ env.SOURCE_FOLDER }}_site/
+  deploy_source:
+    name: 🚀 Site Build
+    runs-on: ubuntu-latest
+    needs: prepare_deploy_source
+    env:
+      BUNDLE_PATH: "vendor/bundle"
+      BUNDLE_JOBS: 4
+      BUNDLE_RETRY: 3
+    steps:
+      - name: Build site (without 'rubocop' and 'reek')
         run: |
-          bundle exec jekyll build --source ./${{ env.SOURCE_FOLDER }} \
-            --destination ./${{ env.SOURCE_FOLDER }}_site --verbose --trace
+          bundle exec jekyll build --source ./${{ env.SOURCE_FOLDER }} \ --destination ./${{ env.SOURCE_FOLDER }}_site \
+            --verbose --trace
         env:
           # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
