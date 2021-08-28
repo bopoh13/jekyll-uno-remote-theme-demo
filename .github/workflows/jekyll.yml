@@ -6,12 +6,13 @@ on:
       - master
 
 env:
-  RUBY_VERSION: 2.7
-  DEPLOY_USER: "github-actions[bot]" # "${GITHUB_ACTOR}"
+  RUBY_VERSION: 3.0
+  DEPLOY_USER: "${GITHUB_ACTOR}"
   SOURCE_DIR: ""
 
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.ref }}
 
 jobs:
   build_and_deploy:
@@ -72,16 +73,19 @@ jobs:
 #          ACTIONS_STEP_DEBUG: true
      
       - name: Dump GitHub context
-        run: echo "${GITHUB_CONTEXT}"
+        run: |
+          echo "${GITHUB_CONTEXT}"
+          echo "${ENV_CONTEXT}"
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-      
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
-        # working-directory: ./${{ env.SOURCE_DIR }}
-          ACTIONS_STEP_DEBUG: true
+          ENV_CONTEXT: ${{ toJson(env) }}
+#      
+#      - uses: ruby/setup-ruby@v1
+#        with:
+#          ruby-version: ${{ env.RUBY_VERSION }}
+#          bundler-cache: true
+#        # working-directory: ./${{ env.SOURCE_DIR }}
+#          ACTIONS_STEP_DEBUG: true
       
       - name: Deploy to GitHub Pages
         run: |
