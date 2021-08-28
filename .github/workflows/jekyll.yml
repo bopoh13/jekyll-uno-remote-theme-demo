@@ -27,8 +27,8 @@ jobs:
       
       - name: Build index.html
         run: |
-          mkdir -p www/_site
-          cat > www/_site/index.html <<EOL
+          mkdir -p ./${{ env.SOURCE_DIR }}_site
+          cat > ./${{ env.SOURCE_DIR }}_site/index.html <<EOL
           <!doctype html>
           <html>
             <head>
