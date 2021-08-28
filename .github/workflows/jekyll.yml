@@ -44,18 +44,13 @@ jobs:
       
       - name: Deploy to GitHub Pages
         if: success()
-#        uses: JamesIves/github-pages-deploy-action@releases/v4
-        uses: crazy-max/ghaction-github-pages@v2
+        uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
-          target_branch: gh-pages
-          build_dir: ./${{ env.SOURCE_DIR }}
-#          branch: gh-pages # The branch the action should deploy to.
-#          folder: ./${{ env.SOURCE_DIR }} # The folder the action should deploy.
-#          target-folder: ./_site # publish_dir
-#          silent: false
+          branch: gh-pages # The branch the action should deploy to.
+          folder: ./ # The folder the action should deploy.
+          target-folder: ./${{ env.SOURCE_DIR }}_site # publish_dir
+          silent: false
           ACTIONS_STEP_DEBUG: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      
 #      - name: Sleep for 60 seconds
 #        uses: jakejarvis/wait-action@master
