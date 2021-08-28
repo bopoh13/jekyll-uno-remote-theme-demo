@@ -62,5 +62,5 @@ jobs:
             --message "$SOURCE_COMMIT"
           git push
           popd &>/dev/null
-    with:
-      ACTIONS_STEP_DEBUG: true
+        with:
+          ACTIONS_STEP_DEBUG: true
