@@ -35,7 +35,8 @@ jobs:
               <title>GH Pages deploy</title>
             </head>
             <body>
-              <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through <a href="https://github.com/marketplace/actions/gh-pages-deploy">GH Pages deploy</a>.</p>
+              <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through 
+                <a href="https://github.com/marketplace/actions/deploy-to-github-pages">Deploy to GitHub Pages</a>.</p>
             </body>
           </html>
           EOL
@@ -43,10 +44,16 @@ jobs:
       - name: Build and Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
-          branch: gh-pages
+          branch: master
           folder: _site
           target-folder: ./${{ env.SOURCE_DIR }}
           silent: true
+      
+      - name: Cleanup Generated Branch
+        uses: dawidd6/action-delete-branch@v2.0.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branches: gh-pages
   
   build_and_deploy:
   # github.event.repository.fork == false
