@@ -7,10 +7,10 @@ on:
 
 env:
   RUBY_VERSION: 2.7
-  SOURCE_FOLDER: ""
+  SITE_FILES_DIR: ""
 
 jobs:
-  prepare_deploy_source:
+  deploy_source:
     if: "!contains(github.event.commits[0].message, '[ci skip]')"
     name: 🔧 Prepare Deploy
     runs-on: ubuntu-latest
@@ -25,40 +25,42 @@ jobs:
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
-      #    working-directory: ./${{ env.SOURCE_FOLDER }}
+        # working-directory: ./${{ env.SITE_FILES_DIR }}
       
       - name: Clone target branch
         run: |
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
           REMOTE_REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           echo "Publishing to ${GITHUB_REPOSITORY} on branch ${REMOTE_BRANCH}"
-          rm -rf ./${{ env.SOURCE_FOLDER }}_site/
+          rm -rf ./${{ env.SITE_FILES_DIR }}_site/
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch \
-            --no-checkout "${REMOTE_REPO}" ./${{ env.SOURCE_FOLDER }}_site/
+            --no-checkout "${REMOTE_REPO}" ./${{ env.SITE_FILES_DIR }}_site/
       
       - name: Build site (without 'rubocop' and 'reek')
         run: |
-          bundle exec jekyll build --source ./${{ env.SOURCE_FOLDER }} \ --destination ./${{ env.SOURCE_FOLDER }}_site \
+          bundle exec jekyll build --source ./${{ env.SITE_FILES_DIR }} \ --destination ./${{ env.SITE_FILES_DIR }}_site \
             --verbose --trace
         env:
-          # For jekyll-github-metadata
+        # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
   deploy_source:
     name: 🚀 Site Build
     runs-on: ubuntu-latest
-    needs: prepare_deploy_source
+    needs: deploy_source
     steps:
       - uses: actions/checkout@v2
       - name: Deploy to GitHub Pages
         run: |
           SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
-          pushd ./${{ env.SOURCE_FOLDER }}_site &>/dev/null
+          pushd ./${{ env.SITE_FILES_DIR }}_site &>/dev/null
           : > .nojekyll
           git add --all
           git -c user.name="${GITHUB_ACTOR}" -c user.email="${GITHUB_ACTOR}@users.noreply.github.com" \
             commit --quiet \
-            --message "Deploy ${{ env.SOURCE_FOLDER }} from ${GITHUB_SHA}" \
+            --message "Deploy ${{ env.SITE_FILES_DIR }} from ${GITHUB_SHA}" \
             --message "$SOURCE_COMMIT"
           git push
           popd &>/dev/null
+    with:
+      ACTIONS_STEP_DEBUG: true
