@@ -48,12 +48,14 @@ jobs:
           folder: _site
           target-folder: ./${{ env.SOURCE_DIR }}
           silent: true
+          ACTIONS_STEP_DEBUG: true
       
-      - name: Cleanup Generated Branch
-        uses: dawidd6/action-delete-branch@v2.0.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: gh-pages
+#      - name: Cleanup Generated Branch
+#        uses: dawidd6/action-delete-branch@v2.0.1
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          branches: gh-pages
+#          ACTIONS_STEP_DEBUG: true
   
   build_and_deploy:
   # github.event.repository.fork == false
