@@ -7,11 +7,17 @@ on:
 
 env:
   RUBY_VERSION: 2.7
+  DEPLOY_USER: "github-actions[bot]" # "${GITHUB_ACTOR}"
   SOURCE_DIR: ""
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   build_and_deploy:
-    if: "!contains(github.event.commits[0].message, '[ci skip]')"
+    if: |
+      !contains(github.event.commits[0].message, '[ci skip]') &&
+      github.ref == 'refs/heads/master' && github.event.repository.fork == true
   #  name: 🔧 Build and Deploy
     runs-on: ubuntu-latest
     env:
@@ -39,11 +45,13 @@ jobs:
           rm -rf ./${{ env.SOURCE_DIR }}_site/
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch \
             --no-checkout "${REMOTE_REPO}" ./${{ env.SOURCE_DIR }}_site/
+          echo "Build status - ${{ github.event.build.status }}"
       
       - name: Build site (without 'rubocop' and 'reek')
         run: |
           bundle exec jekyll build --source ./${{ env.SOURCE_DIR }} \ --destination ./${{ env.SOURCE_DIR }}_site \
             --verbose --trace
+          echo "Build status - ${{ github.event.build.status }}"
         env:
         # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -63,6 +71,11 @@ jobs:
           persist-credentials: false
           ACTIONS_STEP_DEBUG: true
       
+      - name: Dump GitHub context
+        run: echo "${GITHUB_CONTEXT}"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
@@ -76,7 +89,7 @@ jobs:
           pushd ./${{ env.SOURCE_DIR }}_site &>/dev/null
           : > .nojekyll
           git add --all
-          git -c user.name="${GITHUB_ACTOR}" -c user.email="${GITHUB_ACTOR}@users.noreply.github.com" \
+          git -c user.name="${{ env.DEPLOY_USER }}" -c user.email="${{ env.DEPLOY_USER }}@users.noreply.github.com" \
             commit --quiet \
             --message "Deploy ${{ env.SOURCE_DIR }} from ${GITHUB_SHA}" \
             --message "$SOURCE_COMMIT"
