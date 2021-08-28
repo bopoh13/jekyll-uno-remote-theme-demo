@@ -36,11 +36,14 @@ jobs:
             <body>
               <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through 
                 <a href="https://github.com/marketplace/actions/deploy-to-github-pages">Deploy to GitHub Pages</a>.</p>
-              <ul><li><a href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions">Workflow syntax for Github Actions</a>.</li>
-                <li><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#publishing-sources-for-github-pages-sites">Publishing sources for Github Pages sites</a></li></ul>
+              <ul><li><a href="$LINK_PREFIX/en/actions/reference/workflow-syntax-for-github-actions$LINK_POSTFIX" target="_blank">Workflow syntax for Github Actions</a>.</li>
+                <li><a href="$LINK_PREFIX/en/pages/getting-started-with-github-pages/about-github-pages$LINK_POSTFIX#publishing-sources-for-github-pages-sites" target="_blank">Publishing sources for Github Pages sites</a></li></ul>
             </body>
           </html>
           EOL
+        env:
+          LINK_PREFIX: https://docs-github-com.translate.goog
+          LINK_POSTFIX: ?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
       
       - name: Deploy to GitHub Pages
         if: success()
