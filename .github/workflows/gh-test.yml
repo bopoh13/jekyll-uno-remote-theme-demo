@@ -1,0 +1,61 @@
+name: Test Build index.html
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  SOURCE_DIR: ""
+
+jobs:
+  test_page_build:
+    if: contains(github.event.commits[0].message, '[gh-test]')
+    name: Test Page Build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ci-${{ github.ref }}
+    
+    steps:
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
+          ACTIONS_STEP_DEBUG: true
+      
+      - uses: actions/checkout@v2.3.4
+        with:
+          persist-credentials: false
+          ACTIONS_STEP_DEBUG: true
+      
+      - name: Create dummy index.html
+        run: |
+          mkdir --help
+          mkdir -p ./${{ env.SOURCE_DIR }}_site
+          cat > ./${{ env.SOURCE_DIR }}_site/index.html <<EOL
+          <!doctype html>
+          <html>
+            <head>
+              <title>Deploy to GitHub Pages</title>
+            </head>
+            <body>
+              <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through 
+                <a href="https://github.com/marketplace/actions/deploy-to-github-pages">Deploy to GitHub Pages</a>.</p>
+              <ul><li><a href="$LINK_PREFIX/en/actions/reference/workflow-syntax-for-github-actions$LINK_POSTFIX" target="_blank">Workflow syntax for Github Actions</a>.</li>
+                <li><a href="$LINK_PREFIX/en/pages/getting-started-with-github-pages/about-github-pages$LINK_POSTFIX#publishing-sources-for-github-pages-sites" target="_blank">Publishing sources for Github Pages sites</a>.</li></ul>
+            </body>
+          </html>
+          EOL
+        env:
+          LINK_PREFIX: https://docs-github-com.translate.goog
+          LINK_POSTFIX: ?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
+      
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: _site # The folder the action should deploy.
+          target-folder: ./${{ env.SOURCE_DIR }} # publish_dir
+          silent: false
+          ACTIONS_STEP_DEBUG: true
