@@ -49,18 +49,18 @@ jobs:
           target-folder: ./${{ env.SOURCE_DIR }}
           silent: false
           ACTIONS_STEP_DEBUG: true
-      
-      - name: Sleep for 60 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '60s'
-      
-      - name: Cleanup Generated Branch
-        uses: dawidd6/action-delete-branch@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: gh-pages
-          ACTIONS_STEP_DEBUG: true
+#      
+#      - name: Sleep for 60 seconds
+#        uses: jakejarvis/wait-action@master
+#        with:
+#          time: '60s'
+#      
+#      - name: Cleanup Generated Branch
+#        uses: dawidd6/action-delete-branch@v3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          branches: gh-pages
+#          ACTIONS_STEP_DEBUG: true
   
   build_and_deploy:
   # github.event.repository.fork == false
