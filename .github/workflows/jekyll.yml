@@ -50,12 +50,12 @@ jobs:
           silent: true
           ACTIONS_STEP_DEBUG: true
       
-#      - name: Cleanup Generated Branch
-#        uses: dawidd6/action-delete-branch@v2.0.1
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          branches: gh-pages
-#          ACTIONS_STEP_DEBUG: true
+      - name: Cleanup Generated Branch
+        uses: dawidd6/action-delete-branch@v2.0.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branches: gh-pages
+          ACTIONS_STEP_DEBUG: true
   
   build_and_deploy:
   # github.event.repository.fork == false
@@ -139,7 +139,7 @@ jobs:
           git add --all
           git -c user.name="${{ env.DEPLOY_USER }}" -c user.email="${{ env.DEPLOY_USER }}@users.noreply.github.com" \
             commit --quiet \
-            --message "Deploy ${{ env.SOURCE_DIR }} from ${GITHUB_SHA}" \
+            --message "Deploying to ${{ env.SOURCE_DIR }} from ${GITHUB_SHA}" \
             --message "$SOURCE_COMMIT"
           git push
           popd &>/dev/null
