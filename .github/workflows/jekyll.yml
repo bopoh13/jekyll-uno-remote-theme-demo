@@ -7,19 +7,54 @@ on:
 
 env:
   RUBY_VERSION: 2.7
-  DEPLOY_USER: "github-actions[bot]" # "${GITHUB_ACTOR}"
-  SOURCE_DIR: ""
+  DEPLOY_USER: "github-actions[bot]" # or "${GITHUB_ACTOR}"
+  SOURCE_DIR: "" # exclude 'vendor' dir in config.yml
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 concurrency:
   group: ci-${{ github.ref }}
 
 jobs:
+  test_build:
+    if: github.event.repository.fork == true
+    name: 🔧 Test Build and Deploy
+    runs-on: ubuntu-latest
+    
+    - uses: actions/checkout@v2
+    
+    - name: Build
+      run: |
+        mkdir -p www/_site
+        cat > www/_site/index.html <<EOL
+        <!doctype html>
+        <html>
+          <head>
+            <title>GH Pages deploy</title>
+          </head>
+          <body>
+            <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through <a href="https://github.com/marketplace/actions/gh-pages-deploy">GH Pages deploy</a>.</p>
+          </body>
+        </html>
+        EOL
+    
+    - name: Deploy
+      id: deploy
+      if: success()
+      uses: ./
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        email: arnaud@ligny.org
+        build_dir: www/_site/
+    
+    - name: Deploy result
+      run: echo ${{ steps.deploy.outputs.result }}
+  
   build_and_deploy:
   # github.event.repository.fork == false
     if: |
       !contains(github.event.commits[0].message, '[ci skip]') &&
-      github.ref == 'refs/heads/master' && github.event.repository.fork == true
+      github.ref == 'refs/heads/master' && github.event.repository.fork == false
   #  name: 🔧 Build and Deploy
     runs-on: ubuntu-latest
     env:
@@ -74,9 +109,11 @@ jobs:
       - name: Dump GitHub context
         run: |
           echo "${JOB_CONTEXT}"
+          echo "${STEPS_CONTEXT}"
           echo "${GITHUB_CONTEXT}"
         env:
           JOB_CONTEXT: ${{ toJson(job) }}
+          STEPS_CONTEXT: ${{ toJson(steps) }}
           GITHUB_CONTEXT: ${{ toJson(github) }}
 #      
 #      - uses: ruby/setup-ruby@v1
