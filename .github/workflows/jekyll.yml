@@ -64,7 +64,7 @@ jobs:
     name: 🚀 Build and Deploy
     ## github.event.repository.fork == false
     if: |
-      "github.ref == 'refs/heads/master' && github.event.repository.fork == false"
+      github.ref == 'refs/heads/master' && github.event.repository.fork == false
     runs-on: ubuntu-latest
     concurrency:
       group: ci-${{ github.ref }}
