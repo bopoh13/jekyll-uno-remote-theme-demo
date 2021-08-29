@@ -14,92 +14,75 @@ env:
   SOURCE_DIR: "" # exclude 'vendor' dir in config.yml
 
 jobs:
-  test_page_build:
+  test_build:
+    name: 🔧 Test Build
     if: !contains(github.event.commits[0].message, 'gh-test')
-    name: 🔧 Test Page Build
     runs-on: ubuntu-latest
     concurrency:
       group: ci-${{ github.ref }}
     
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2
         with:
           persist-credentials: false
           ACTIONS_STEP_DEBUG: true
       
-      - name: Create index.html
-        run: |
-          mkdir --help
-          mkdir -p ./${{ env.SOURCE_DIR }}_site
-          cat > ./${{ env.SOURCE_DIR }}_site/index.html <<EOL
-          <!doctype html>
-          <html>
-            <head>
-              <title>Deploy to GitHub Pages</title>
-            </head>
-            <body>
-              <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through 
-                <a href="https://github.com/marketplace/actions/deploy-to-github-pages">Deploy to GitHub Pages</a>.</p>
-              <ul><li><a href="$LINK_PREFIX/en/actions/reference/workflow-syntax-for-github-actions$LINK_POSTFIX" target="_blank">Workflow syntax for Github Actions</a>.</li>
-                <li><a href="$LINK_PREFIX/en/pages/getting-started-with-github-pages/about-github-pages$LINK_POSTFIX#publishing-sources-for-github-pages-sites" target="_blank">Publishing sources for Github Pages sites</a>.</li></ul>
-            </body>
-          </html>
-          EOL
-        env:
-          LINK_PREFIX: https://docs-github-com.translate.goog
-          LINK_POSTFIX: ?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
-      
-      - name: Deploy to GitHub Pages
-        if: success()
-        uses: JamesIves/github-pages-deploy-action@releases/v4
+      - uses: ruby/setup-ruby@v1
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: _site # The folder the action should deploy.
-          target-folder: ./${{ env.SOURCE_DIR }} # publish_dir
-          silent: false
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: false
+        # working-directory: ./${{ env.SOURCE_DIR }}
           ACTIONS_STEP_DEBUG: true
-#      
-#      - name: Sleep for 60 seconds
-#        uses: jakejarvis/wait-action@master
-#        with:
-#          time: '60s'
-#          ACTIONS_STEP_DEBUG: true
-#      
-#      - name: Cleanup Generated Branch
-#        uses: dawidd6/action-delete-branch@v3
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          branches: gh-pages
-#          ACTIONS_STEP_DEBUG: true
+      
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJSON(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJSON(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJSON(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJSON(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJSON(matrix) }}
+        run: echo "$MATRIX_CONTEXT
   
   build_and_deploy:
-  # github.event.repository.fork == false
-    if: |
-      !contains(github.event.commits[0].message, '[ci skip]') &&
-      github.ref == 'refs/heads/master' && github.event.repository.fork == false
+    ## https://docs-github-com.translate.goog/en/actions/reference/workflow-syntax-for-github-actions?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
     name: 🚀 Build and Deploy
+    ## github.event.repository.fork == false
+    if: |
+      github.ref == 'refs/heads/master' && github.event.repository.fork == false
     runs-on: ubuntu-latest
-    # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
     concurrency:
       group: ci-${{ github.ref }}
-    needs: test_page_build
+    needs: test_build
     env:
       BUNDLE_PATH: "vendor/bundle"
       BUNDLE_JOBS: 4
       BUNDLE_RETRY: 3
     
     steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          persist-credentials: false
-#          ACTIONS_STEP_DEBUG: true
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
       
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
-        # working-directory: ./${{ env.SOURCE_DIR }}
-          ACTIONS_STEP_DEBUG: true
       
       - name: Clone target branch
         run: |
@@ -109,50 +92,22 @@ jobs:
           rm -rf ./${{ env.SOURCE_DIR }}_site/
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch \
             --no-checkout "${REMOTE_REPO}" ./${{ env.SOURCE_DIR }}_site/
+          mkdir --help
       
-      - name: Build site (without 'rubocop' and 'reek')
+      ## https://docs-github-com.translate.goog/en/actions/reference/encrypted-secrets?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
+      - name: Build Site in the jekyll/builder container
         run: |
           bundle exec jekyll build --source ./${{ env.SOURCE_DIR }} \ --destination ./${{ env.SOURCE_DIR }}_site \
             --verbose --trace
         env:
-        # For jekyll-github-metadata
+          # For jekyll-github-metadata
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      
-#  build_container:
-#  #  name: 🚀 Build Site in the jekyll/builder container
-#    needs: build_and_deploy
-#    runs-on: ubuntu-latest
-#    env:
-#      BUNDLE_PATH: "vendor/bundle"
-#      BUNDLE_JOBS: 4
-#      BUNDLE_RETRY: 3
-#    
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          persist-credentials: false
-#          ACTIONS_STEP_DEBUG: true
-     
-      - name: Dump GitHub context
-        run: |
-          echo "${JOB_CONTEXT}"
-          echo "${STEPS_CONTEXT}"
-          echo "${GITHUB_CONTEXT}"
-        env:
-          JOB_CONTEXT: ${{ toJson(job) }}
-          STEPS_CONTEXT: ${{ toJson(steps) }}
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-#      
-#      - uses: ruby/setup-ruby@v1
-#        with:
-#          ruby-version: ${{ env.RUBY_VERSION }}
-#          bundler-cache: true
-#        # working-directory: ./${{ env.SOURCE_DIR }}
-#          ACTIONS_STEP_DEBUG: true
       
       - name: Deploy to GitHub Pages
         run: |
           SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
+          INDEX_HTML="index.md"
+          test -w "$INDEX_HTML" && rename 's\.md/\.html/' *.htm "$INDEX_HTML"
           pushd ./${{ env.SOURCE_DIR }}_site &>/dev/null
           : > .nojekyll
           git add --all
@@ -165,9 +120,3 @@ jobs:
        
       - name: Deploy result
         run: echo ${{ steps.deploy.outputs.result }}
-      
-      - name: Cleanup Generated Branch
-        uses: dawidd6/action-delete-branch@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: gh-pages
