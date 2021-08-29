@@ -88,11 +88,12 @@ jobs:
         run: |
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
           REMOTE_REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          INDEX_HTML="./${{ env.SOURCE_DIR }}_site/index.md"
           echo "Publishing to ${GITHUB_REPOSITORY} on branch ${REMOTE_BRANCH}"
           rm -rf ./${{ env.SOURCE_DIR }}_site/
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch \
             --no-checkout "${REMOTE_REPO}" ./${{ env.SOURCE_DIR }}_site/
-          mkdir --help
+          test -w "$INDEX_HTML" && mv "$INDEX_HTML" "${INDEX_HTML%.*}.html"
       
       ## https://docs-github-com.translate.goog/en/actions/reference/encrypted-secrets?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
       - name: Build Site in the jekyll/builder container
@@ -106,8 +107,6 @@ jobs:
       - name: Deploy to GitHub Pages
         run: |
           SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
-          INDEX_HTML="index.md"
-          test -w "$INDEX_HTML" && mv "$INDEX_HTML" "${INDEX_HTML%.*}.html"
           pushd ./${{ env.SOURCE_DIR }}_site &>/dev/null
           : > .nojekyll
           git add --all
