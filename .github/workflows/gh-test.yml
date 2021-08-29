@@ -8,13 +8,13 @@ on:
 env:
   SOURCE_DIR: ""
 
+# https://rtfm.co.ua/github-obzor-github-actions-i-deploj-s-argocd/
 jobs:
   test_page_build:
-    if: contains(github.event.commits[0].message, '[gh-test]')
     name: Test Page Build
+    # https://github-blog.translate.goog/changelog/2021-02-08-github-actions-skip-pull-request-and-push-workflows-with-skip-ci/?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
+    if: contains(github.event.head_commit.message, 'gh-test')
     runs-on: ubuntu-latest
-    concurrency:
-      group: ci-${{ github.ref }}
     
     steps:
       - name: Sleep for 30 seconds
