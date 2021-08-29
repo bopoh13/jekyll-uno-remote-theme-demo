@@ -54,10 +54,10 @@ jobs:
         env:
           STRATEGY_CONTEXT: ${{ toJSON(strategy) }}
         run: echo "$STRATEGY_CONTEXT"
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJSON(matrix) }}
-        run: echo "$MATRIX_CONTEXT
+      #- name: Dump matrix context
+      #  env:
+      #    MATRIX_CONTEXT: ${{ toJSON(matrix) }}
+      #  run: echo "$MATRIX_CONTEXT
   
   build_and_deploy:
     ## https://docs-github-com.translate.goog/en/actions/reference/workflow-syntax-for-github-actions?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
