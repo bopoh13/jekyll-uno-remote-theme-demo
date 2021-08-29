@@ -15,6 +15,7 @@ env:
 
 jobs:
   test_build:
+    ## https://github-blog.translate.goog/changelog/2021-02-08-github-actions-skip-pull-request-and-push-workflows-with-skip-ci/?_x_tr_sl=en&_x_tr_tl=ru&_x_tr_pto=ajax,nv,elem
     name: 🔧 Test Build
     if: "! contains(github.event.commits[0].message, 'gh-test')"
     runs-on: ubuntu-latest
