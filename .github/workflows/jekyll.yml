@@ -89,7 +89,7 @@ jobs:
         run: |
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
           REMOTE_REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
-          INDEX_HTML="./${{ env.SOURCE_DIR }}_site/index.md"
+          INDEX_HTML="index.md"
           echo "Publishing to ${GITHUB_REPOSITORY} on branch ${REMOTE_BRANCH}"
           rm -rf ./${{ env.SOURCE_DIR }}_site/
           git clone --depth=1 --branch="${REMOTE_BRANCH}" --single-branch \
