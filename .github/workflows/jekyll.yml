@@ -107,7 +107,7 @@ jobs:
         run: |
           SOURCE_COMMIT="$(git log -1 --pretty="%an: %B" "$GITHUB_SHA")"
           INDEX_HTML="index.md"
-          test -w "$INDEX_HTML" && prename 's\.md/\.html/' "$INDEX_HTML"
+          test -w "$INDEX_HTML" && $(prename "s\.md/\.html/" "$INDEX_HTML")
           pushd ./${{ env.SOURCE_DIR }}_site &>/dev/null
           : > .nojekyll
           git add --all
