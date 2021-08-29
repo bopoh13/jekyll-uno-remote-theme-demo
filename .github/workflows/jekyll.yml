@@ -85,7 +85,7 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
       
-      - name: Clone target branch
+      - name: Clone target branch, and Rename index.md
         run: |
           REMOTE_BRANCH="${REMOTE_BRANCH:-gh-pages}"
           REMOTE_REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
@@ -118,5 +118,5 @@ jobs:
           git push
           popd &>/dev/null
        
-      - name: Deploy result
+      - name: Deploy result (empty)
         run: echo ${{ steps.deploy.outputs.result }}
